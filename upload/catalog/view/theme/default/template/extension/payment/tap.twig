@@ -1,0 +1,119 @@
+<html>
+<head>
+<link href="https://goSellJSLib.b-cdn.net/v1.4/css/gosell.css" rel="stylesheet" />
+</head>
+<body>
+<link href="https://goSellJSLib.b-cdn.net/v1.4/css/gosell.css" rel="stylesheet" />
+<script type="text/javascript" src="https://goSellJSLib.b-cdn.net/v1.4/js/gosell.js"></script>
+<div class="buttons">
+<form>
+  <div class="pull-right">
+    <input type="button" value="{{ button_confirm }}" id="button-confirm" class="btn btn-primary" />
+  </div>
+</form>
+<script type="text/javascript"><!--
+  var payment_tap_charge_mode = "{{ charge }}";
+  var active_pk = '{{active_pk}}';
+  var order_id = '{{order_id}}';
+  var post_url = '{{entry_post_url}}';
+  var hash = '{{hashstring}}';
+  var transaction_url = '{{transaction}}';
+  var ui_mode = '{{entry_ui_mode}}';
+  var payment_tap_charge_mode = "{{ charge }}";
+  var ui_mode = "{{entry_ui_mode}}";
+  var language = "{{language}}";
+  $('#button-confirm').on('click', function() {
+    if (ui_mode == 'Redirect') {
+      window.location.href = transaction_url;
+    }
+    else {
+        var object_trans = {
+            mode: 'charge',
+                charge:{
+                  saveCard: false,
+                  threeDSecure: true,
+                  description: "",
+                  statement_descriptor: "Sample",
+                  reference:{
+                    transaction: "txn_0001",
+                    order: "{{ order_id }}"
+                  },
+                  metadata:{},
+                  receipt:{
+                    email: false,
+                    sms: true
+                  },                  
+                  redirect: "{{returnurl}}",
+
+                  post: "{{entry_post_url}}"
+                }
+            }
+    goSell.config({
+      gateway:{
+        publicKey:"{{ active_pk }}",
+        language: language,
+        contactInfo:true,
+        supportedCurrencies:"all",
+        supportedPaymentMethods: "all",
+        saveCardOption:false,
+        customerCards: true,
+        notifications:'standard',
+        callback:(response) => {
+            console.log('response', response);
+        },
+        backgroundImg: {
+          url: 'imgURL',
+          opacity: '0.5'
+        },
+        labels:{
+            cardNumber:"Card Number",
+            expirationDate:"MM/YY",
+            cvv:"CVV",
+            cardHolder:"Name on Card",
+            actionButton:"Pay"
+        },
+        style: {
+            base: {
+              color: '#535353',
+              lineHeight: '18px',
+              fontFamily: 'sans-serif',
+              fontSmoothing: 'antialiased',
+              fontSize: '16px',
+              '::placeholder': {
+                color: 'rgba(0, 0, 0, 0.26)',
+                fontSize:'15px'
+              }
+            },
+            invalid: {
+              color: 'red',
+              iconColor: '#FA755A '
+            }
+        }
+      },
+      customer:{
+        id:"",
+        first_name: "{{cstname}}",
+        middle_name: "Middle Name",
+        last_name: "{{cstlname}}",
+        email: "{{cstemail}}",
+        phone: {
+            country_code: "{{cntry}}",
+            number: "{{cstmobile}}",
+        }
+        },
+        order:{
+            id : "{{order_id}}",
+            amount: "{{amount}}",
+            currency:"{{currencycode}}",
+            shipping:null,
+            taxes: null
+        },
+        hashstring:hash,
+        transaction: object_trans
+        });
+        goSell.openLightBox();
+        }
+    });
+</script>
+</body>
+</html>
